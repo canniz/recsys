@@ -11,6 +11,7 @@ TEST_SET_HOLDOUT = 0.2
 
 train = pd.read_csv('../input/train.csv')
 target = pd.read_csv('../input/target_playlists.csv')
+tracks = pd.read_csv('../input/tracks.csv')
 
 def classify_durations(data):
     data.loc[tracks['duration_sec'].isin(range(60)),'duration_sec'] = 1
@@ -44,7 +45,7 @@ def build_icm_csr(data):
     durations_max = np.amax(durations)
     number_of_songs = data.shape[0]
     
-    icm_csr_matrix = sparse.csr_matrix((number_of_songs, albums_max + artists_max + durations_max + 3), dtype=np.uint32)
+    icm_csr_matrix = sparse.csr_matrix((number_of_songs, albums_max + artists_max + durations_max + 3), dtype=np.float32)
     
     icm_csr_matrix[tracks,albums_id] = 1
     icm_csr_matrix[tracks, albums_max + artists_id] = 1
@@ -80,7 +81,7 @@ training_set = pd.concat([train, test_set, test_set]).drop_duplicates(keep=False
 print("Creating URMs ...")
 urm_csr = build_urm_csr(training_set)
 test_set_csr = build_urm_csr(test_set)
-#icm_csr = build_icm_csr(tracks)
+icm_csr = build_icm_csr(tracks)
 
 test_set_playlists = test_set['playlist_id'].unique()
 
@@ -155,14 +156,11 @@ def evaluate_algorithm(URM_test, recommender_object, target_playlists, at=10):
 
 class SVDRecommender(object):
     
-    def fit(self, URM_csr, k):
+    def fit(self, ICM_csr,URM_csr, k):
         self.k = k
-        #transformer = TfidfTransformer()
-        #transformer.fit(URM_csr)
-        #tf_idf_matrix = transformer.transform(URM_csr)
-        u, s, v = sparse.linalg.svds(URM_csr, k = k)
+        u, s, v = sparse.linalg.svds(ICM_csr.T, k = k)
         v = sparse.csr_matrix(v)
-        self.item_similarities = sparse.csr_matrix(v.T.dot(v))        
+        self.item_similarities = sparse.csr_matrix(v.T.dot(v))      
         self.URM_csr = URM_csr
         
     
@@ -188,8 +186,11 @@ class SVDRecommender(object):
 
 print("Creating recommender ...")
 svd = SVDRecommender()
-test_k = [50, 70, 100, 150, 200, 300, 400]
+test_k = [50]
 for value in test_k:
     print("Fitting with k = " + str(value))
-    svd.fit(urm_csr, k = value)
+    svd.fit(icm_csr, urm_csr, k = value)
+    print("Evaluating")
     evaluate_algorithm(test_set_csr, svd, test_set_playlists)
+
+
