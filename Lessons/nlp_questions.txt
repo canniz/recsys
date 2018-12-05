@@ -1,0 +1,24 @@
+Natural Language Processing Exam questions
+I tried to copy/remember the questions asked during the exam, as there is no exam text available in this folder. I hope other people will contribute with questions asked in past and future exams, in order to know what to expect when studying for this course.
+
+Pre-exam 15/11/2017
+1. SUMMARIZATION
+    a. Describe the steps for generic summarization, for single-document and multi-document
+    b. Describe how the extracted information cn be ordered, in multi-document summarization
+    c. Describe Query Answering
+2. DIALOGUE AND SENTIMENT ANALYSIS
+    a. Describe Dialogue Acts: their detection, ambiguity and disambiguation strategies
+    b. Describe how speech analysis  can contribute to the analysis of dialogues
+    c. Describe the Scherer’s typology of affective states
+3. (I forgot the title)
+    a. Write the formula for perplexity. What does it mean?
+ ** b. Write the idea behind Laplace Smoothing. Write and explain the formulas for c*, c*(wn-1,wn). 
+	Write and explain the formulas for P*, P*(wn|wn-1).
+ ** c. Describe the good-turing smoothing: write and explain the formula for c*. Write and explain the formula for Katz Backoff.
+
+
+Coherence and Anaphora resolution
+
+NN
+
+
