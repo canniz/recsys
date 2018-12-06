@@ -44,7 +44,7 @@ def build_urm_csr(data):
     n_pl = np.amax(data['playlist_id']) + 1
     n_tr = np.amax(data['track_id']) + 1
 
-    return sparse.csr_matrix((fill_data, (row, col)), dtype=np.int32, shape=(n_pl, n_tr))
+    return sparse.csr_matrix((fill_data, (row, col)), dtype=np.float32, shape=(50446,20635))
 
 
 def build_csv(items):
