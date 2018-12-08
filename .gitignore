@@ -2,3 +2,5 @@
 \.idea/
 
 Notebooks/sample_submission\.csv
+
+Notebooks/SLIM_BPR/Cython/__pycache__/SLIM_BPR_Cython\.cpython-36\.pyc
