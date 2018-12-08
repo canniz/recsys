@@ -52,7 +52,7 @@ class BayesianSearch(AbstractClassSearch):
 
 
 
-    def search(self, dictionary, metric ="MAP", init_points = 5, n_cases = 30, output_root_path = None, parallelPoolSize = 2, parallelize = True,
+    def search(self, dictionary, metric ="MAP", init_points = 5, n_cases = 30, output_root_path = None, parallelPoolSize = 4, parallelize = True,
                save_model = "best"):
 
         # Associate the params that will be returned by BayesianOpt object to those you want to save

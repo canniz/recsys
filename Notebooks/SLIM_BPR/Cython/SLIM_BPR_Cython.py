@@ -30,7 +30,7 @@ class SLIM_BPR_Cython(SimilarityMatrixRecommender, Recommender, Incremental_Trai
     RECOMMENDER_NAME = "SLIM_BPR_Recommender"
 
 
-    def __init__(self, URM_train, positive_threshold=4, URM_validation = None,
+    def __init__(self, URM_train, positive_threshold=1, URM_validation = None,
                  recompile_cython = False, final_model_sparse_weights = True, train_with_sparse_weights = False,
                  symmetric = True):
 
@@ -89,7 +89,7 @@ class SLIM_BPR_Cython(SimilarityMatrixRecommender, Recommender, Incremental_Trai
 
 
 
-    def fit(self, epochs=300, logFile=None,
+    def fit(self, epochs=50, logFile=None,
             batch_size = 1000, lambda_i = 0.0, lambda_j = 0.0, learning_rate = 1e-4, topK = 200,
             sgd_mode='adagrad', gamma=0.995, beta_1=0.9, beta_2=0.999,
             stop_on_validation = False, lower_validatons_allowed = 5, validation_metric = "MAP",
