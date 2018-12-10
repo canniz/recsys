@@ -55,20 +55,24 @@ def build_csv(items):
     return recommended_items
 
 
-def split(train, TEST_SET_THRESHOLD=10, TEST_SET_HOLDOUT=0.25):
-    """Takes train which is a pd.DataFrame, splits them into training_set, test_set which will also be pd.DataFrame"""
-    grouped = train.groupby('playlist_id')['track_id'].nunique()
+def split(URM_csr, TEST_SET_THRESHOLD=10, TEST_SET_HOLDOUT=0.25):
+    """Takes an URM_csr, splits them into training_set, test_set which will also are URM_csr """
+    nnz_per_row = URM_csr.getnnz(axis=1)
+    result = np.where(nnz_per_row > TEST_SET_THRESHOLD)[0]
+    test_mask = np.random.choice([True,False], len(result),p = [TEST_SET_HOLDOUT, 1 - TEST_SET_HOLDOUT])
+    URM_train = URM_csr.copy()
+    URM_test = sparse.csr_matrix(URM_csr.shape,dtype=np.float32)
+    for i in result[test_mask]:
+        test_sample = URM_csr.getrow(i)
+        nnz_in_test_sample = test_sample.indices
+        test_samples = np.random.choice(nnz_in_test_sample,TEST_SET_THRESHOLD,replace=False)
+        chosen_mask = np.zeros(20635,dtype=bool)
+        chosen_mask[test_samples] = True
+        URM_train[i,chosen_mask] = 0
+        URM_test[i,chosen_mask] = 1
+    URM_train.eliminate_zeros()
+    return URM_train, URM_test
 
-    clipped = grouped.index[grouped > TEST_SET_THRESHOLD].tolist()
-    test_set_indices = [clipped[i] for i in
-                        sorted(random.sample(range(len(clipped)), int(TEST_SET_HOLDOUT * len(clipped))))]
-
-    test_groups = train.loc[train['playlist_id'].isin(test_set_indices)]
-    test_set = pd.DataFrame(columns=["playlist_id", "track_id"])
-    for name, group in test_groups.groupby('playlist_id'):
-        test_set = test_set.append(group.tail(10))
-    training_set = pd.concat([train, test_set, test_set]).drop_duplicates(keep=False)
-    return training_set, test_set
 
 
 def MAP(recommended_items, relevant_items):
