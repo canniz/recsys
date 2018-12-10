@@ -4,18 +4,21 @@ from scipy import sparse
 import random
 
 
-def classify_durations(data, tracks):
-    data.loc[tracks['duration_sec'].isin(range(60)), 'duration_sec'] = 1
-    data.loc[tracks['duration_sec'].isin(range(60, 120)), 'duration_sec'] = 2
-    data.loc[tracks['duration_sec'].isin(range(120, 180)), 'duration_sec'] = 3
-    data.loc[tracks['duration_sec'].isin(range(180, 240)), 'duration_sec'] = 4
-    data.loc[tracks['duration_sec'].isin(range(240, 300)), 'duration_sec'] = 5
-    data.loc[tracks['duration_sec'].isin(range(300, 200000)), 'duration_sec'] = 6
+def classify_durations(data):
+    data.loc[data['duration_sec'].isin(range(60)), 'duration_sec'] = 1
+    data.loc[data['duration_sec'].isin(range(60, 120)), 'duration_sec'] = 2
+    data.loc[data['duration_sec'].isin(range(120, 180)), 'duration_sec'] = 3
+    data.loc[data['duration_sec'].isin(range(180, 240)), 'duration_sec'] = 4
+    data.loc[data['duration_sec'].isin(range(240, 300)), 'duration_sec'] = 5
+    data.loc[data['duration_sec'].isin(range(300, 200000)), 'duration_sec'] = 6
 
     data['duration_sec'].value_counts()
 
 
 def build_icm_csr(data):
+    
+    classify_durations(data)
+    
     albums_id = data['album_id']
     artists_id = data['artist_id']
     durations = data['duration_sec']
