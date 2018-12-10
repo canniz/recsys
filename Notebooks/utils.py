@@ -118,10 +118,10 @@ def evaluate_algorithm(URM_test, recommender_object, target_playlists, at=10):
         cumulative_recall += recall(recommended_items, target_items)
         cumulative_MAP += MAP(recommended_items, target_items)
 
-        cumulative_precision /= num_eval
-        cumulative_recall /= num_eval
-        cumulative_MAP /= num_eval
+    cumulative_precision /= num_eval
+    cumulative_recall /= num_eval
+    cumulative_MAP /= num_eval
 
-        print("Recommender performance is: Precision = {:.6f}, Recall = {:.6f}, MAP = {:.6f}".format(
+    print("Recommender performance is: Precision = {:.6f}, Recall = {:.6f}, MAP = {:.6f}".format(
             cumulative_precision, cumulative_recall, cumulative_MAP))
     return cumulative_MAP
