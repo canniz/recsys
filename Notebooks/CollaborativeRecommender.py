@@ -39,3 +39,8 @@ class CollaborativeItemBasedRecommender(object):
             recommended_items = popularItems[0:at]
         
         return recommended_items
+    
+    def compute_item_score(self, user_id):
+        user = self.URM_csr.getrow(user_id)
+        itemPopularity = user.dot(self.item_similarities)
+        return itemPopularity

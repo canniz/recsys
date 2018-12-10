@@ -52,5 +52,10 @@ class Content_based_recommender:
         return recommended_items
         
     
-    def get_similarity():
+    def get_similarity(self):
         return self.icm_similarities.copy()
+    
+    def compute_item_score(self,user_id):
+        user = self.URM_csr.getrow(user_id)
+        itemPopularity = user.dot(self.icm_similarities)
+        return itemPopularity
