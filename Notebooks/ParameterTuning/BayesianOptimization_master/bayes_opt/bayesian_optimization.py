@@ -281,7 +281,9 @@ class BayesianOptimization(object):
                 self.plog.print_step(x_max, y, pwarning)
 
             # Updating the GP.
-            self.gp.fit(self.space.X, self.space.Y)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                self.gp.fit(self.space.X, self.space.Y)
 
             # Update the best params seen so far
             self.res['max'] = self.space.max_point()
@@ -293,12 +295,14 @@ class BayesianOptimization(object):
                 y_max = self.space.Y[-1]
 
             # Maximize acquisition function to find next probing point
-            x_max = acq_max(ac=self.util.utility,
-                            gp=self.gp,
-                            y_max=y_max,
-                            bounds=self.space.bounds,
-                            random_state=self.random_state,
-                            **self._acqkw)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                x_max = acq_max(ac=self.util.utility,
+                                gp=self.gp,
+                                y_max=y_max,
+                                bounds=self.space.bounds,
+                                random_state=self.random_state,
+                                **self._acqkw)
 
             # Keep track of total number of iterations
             self.i += 1

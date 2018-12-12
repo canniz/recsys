@@ -229,12 +229,12 @@ class BayesianSearch(AbstractClassSearch):
                             **paramether_dictionary)
 
             #return recommender.evaluateRecommendations(self.URM_validation, at=5, mode="sequential")
-            result_dict, _  = self.evaluator_validation.evaluateRecommender(recommender, paramether_dictionary)
+            #result_dict, _  = self.evaluator_validation.evaluateRecommender(recommender, paramether_dictionary)
+            result_dict, _  = self.evaluator_validation.evaluateRecommender(recommender)
             result_dict = result_dict[list(result_dict.keys())[0]]
 
 
             paramether_dictionary_to_save = self.from_fit_params_to_saved_params_function(recommender, paramether_dictionary)
-
             self.from_fit_params_to_saved_params[frozenset(paramether_dictionary.items())] = paramether_dictionary_to_save
 
             self.model_counter += 1
@@ -252,7 +252,7 @@ class BayesianSearch(AbstractClassSearch):
 
             if self.best_solution_val == None or self.best_solution_val<result_dict[metric]:
 
-                writeLog("BayesianSearch: New best config found. Config: {} - results: {}\n".format(paramether_dictionary_to_save, result_dict), self.logFile)
+                writeLog("BayesianSearch: New best config found. Config: {} - MAP: {}\n".format(paramether_dictionary_to_save, result_dict['MAP']), self.logFile)
 
                 pickle.dump(paramether_dictionary_to_save.copy(),
                             open(self.output_root_path + "_best_parameters", "wb"),

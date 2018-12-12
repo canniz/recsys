@@ -148,7 +148,7 @@ class AbstractClassSearch(object):
 
             #result_dict = self.evaluator_validation(recommender, self.URM_validation, paramether_dictionary_to_evaluate)
 
-            result_dict, _ = self.evaluator_validation.evaluateRecommender(self, paramether_dictionary_to_evaluate)
+            result_dict = self.evaluator_validation(recommender, self.URM_validation)
             result_dict = result_dict[list(result_dict.keys())[0]]
 
 
@@ -212,7 +212,8 @@ class AbstractClassSearch(object):
                             **self.best_solution_parameters)
 
 
-        result_dict, result_string = self.evaluator_test.evaluateRecommender(recommender, self.best_solution_parameters)
+        #result_dict, result_string = self.evaluator_test.evaluateRecommender(recommender, self.best_solution_parameters)
+        result_dict, result_string = self.evaluator_test.evaluateRecommender(recommender)
         result_dict = result_dict[list(result_dict.keys())[0]]
 
         pickle.dump(result_dict.copy(),

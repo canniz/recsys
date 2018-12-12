@@ -6,27 +6,33 @@ from Notebooks_utils import Compute_Similarity_Python as sim
 
 class CollaborativeItemBasedRecommender(object):
     
-    def fit(self, URM_csr, block_size = 100, **args):
+    def __init__(self,URM_csr):
+        self.URM_csr = URM_csr
+    
+    def fit(self, block_size = 100, **args):
 
         transformer = TfidfTransformer()
-        transformer.fit(URM_csr)
-        tf_idf_csr = transformer.transform(URM_csr)
+        transformer.fit(self.URM_csr)
+        tf_idf_csr = transformer.transform(self.URM_csr)
 
-        IRM = sparse.csr_matrix(tf_idf_csr.transpose())
+        IRM = sparse.csr_matrix(tf_idf_csr)
         
         similarity_object = sim.Compute_Similarity_Python(IRM, **args)
         
         self.item_similarities = similarity_object.compute_similarity(block_size = block_size)
-        self.URM_csr = URM_csr
         
     def get_URM_train(self):
         return self.URM_csr
     
-    def saveModel(path, file_name):
-        print("NON STO SALVANDO IN " + str(path) + " PERCHE' E' UN CAZZO DI TEST")
-    
-    def recommend(self, user_id, cutoff=10, remove_seen = True, **args):
+    def recommend(self, user_ids, cutoff=10, remove_seen = True, **args):
+        result = []
+        for user in user_ids:
+            recommendation = self.single_recommendation(user)
+            result.append(recommendation)
+        return result
         
+    
+    def single_recommendation(self, user_id, cutoff=10, remove_seen = True, **args):
         user = self.URM_csr.getrow(user_id)
         itemPopularity = user.dot(self.item_similarities)
         popularItems = np.argsort(np.array(itemPopularity.todense())[0])

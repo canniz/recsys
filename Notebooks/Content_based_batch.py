@@ -34,8 +34,16 @@ class Content_based_recommender:
                  similarity = self.similarity, row_weights = self.row_weights)
         self.icm_similarities = sparse.csr_matrix(similarity.compute_similarity())
     
-    def recommend(self, user_id, cutoff=10, remove_seen_flag=True, **args):
-        print(user_id)
+    def recommend(self, user_ids, cutoff=10, remove_seen_flag=True, **args):
+        result = []
+        for user in user_ids:
+            recommendation = self.single_recommendation(user, remove_seen_flag, cutoff)
+            result.append(recommendation)
+        print(result)
+        return result
+        
+    def single_recommendation(self, user_id, remove_seen_flag = True, cutoff = 10):
+        
         user = self.URM_csr.getrow(user_id)
         itemPopularity = user.dot(self.icm_similarities)
         popularItems = np.argsort(np.array(itemPopularity)[0])

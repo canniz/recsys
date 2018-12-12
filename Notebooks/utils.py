@@ -54,6 +54,22 @@ def build_csv(items):
     recommended_items = " ".join(str(i) for i in items)
     return recommended_items
 
+def build_train_target_nn(training_set):
+    
+    occurrencies = training_set.getnnz(axis = 1)
+    mask = np.where(occurrencies > 10)
+    training_set_clean = training_set[mask]
+    
+    target_set = sparse.csr_matrix(training_set_clean.shape, dtype = np.float32)
+
+    for item in range(training_set_clean.shape[0]):
+        user = training_set_clean.getrow(item).indices
+        selection = np.random.choice(user, size = 10, replace = False)
+        training_set_clean[item, selection] = 0
+        target_set[item, selection] = 1
+        
+    training_set_clean.eliminate_zeros()
+    return training_set_clean, target_set
 
 def split(URM_csr, TEST_SET_THRESHOLD=10, TEST_SET_HOLDOUT=0.25):
     """Takes an URM_csr, splits them into training_set, test_set which will also are URM_csr """
@@ -125,3 +141,4 @@ def evaluate_algorithm(URM_test, recommender_object, target_playlists, at=10):
     print("Recommender performance is: Precision = {:.6f}, Recall = {:.6f}, MAP = {:.6f}".format(
             cumulative_precision, cumulative_recall, cumulative_MAP))
     return cumulative_MAP
+
