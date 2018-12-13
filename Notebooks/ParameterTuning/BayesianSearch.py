@@ -218,6 +218,7 @@ class BayesianSearch(AbstractClassSearch):
 
             # Create an object of the same class of the imput
             # Passing the paramether as a dictionary
+            print(**dictionary[DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS])
             recommender = self.recommender_class(*dictionary[DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS],
                                                  **dictionary[DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS])
 
