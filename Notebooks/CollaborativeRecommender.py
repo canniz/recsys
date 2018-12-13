@@ -8,13 +8,7 @@ class CollaborativeItemBasedRecommender(object):
     
     def fit(self, URM_csr, block_size = 100, **args):
 
-        transformer = TfidfTransformer()
-        transformer.fit(URM_csr)
-        tf_idf_csr = transformer.transform(URM_csr)
-
-        IRM = sparse.csr_matrix(tf_idf_csr.transpose())
-        
-        similarity_object = sim.Compute_Similarity_Python(IRM, **args)
+        similarity_object = sim.Compute_Similarity_Python(URM_csr, **args)
         
         self.item_similarities = similarity_object.compute_similarity(block_size = block_size)
         self.URM_csr = URM_csr
@@ -48,4 +42,5 @@ class CollaborativeItemBasedRecommender(object):
     def compute_item_score(self, user_id):
         user = self.URM_csr.getrow(user_id)
         itemPopularity = user.dot(self.item_similarities)
+        
         return itemPopularity

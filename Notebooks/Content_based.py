@@ -20,15 +20,8 @@ class Content_based_recommender:
         self.row_weights = row_weights
         self.URM_csr = URM_csr
         
-    def get_URM_train(self):
-        return self.URM_csr
-    
-    def fit(self,tf_id_flag = True):
-        if tf_id_flag:
-            transformer = TfidfTransformer()
-            transformer.fit(self.dataMatrix)
-            tf_idf_icm = transformer.transform(self.dataMatrix)
-            self.dataMatrix = tf_idf_icm
+    def fit(self):
+        
         similarity = Compute_Similarity_Python(self.dataMatrix, topK=self.TopK, shrink = self.shrink, normalize = self.normalize,
                  asymmetric_alpha = self.asymmetric_alpha, tversky_alpha = self.tversky_alpha, tversky_beta = self.tversky_beta,
                  similarity = self.similarity, row_weights = self.row_weights)
@@ -61,5 +54,6 @@ class Content_based_recommender:
     
     def compute_item_score(self,user_id):
         user = self.URM_csr.getrow(user_id)
+       
         itemPopularity = user.dot(self.icm_similarities)
         return itemPopularity
